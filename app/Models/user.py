@@ -11,6 +11,7 @@ class Tester(Document):
     name = StringField(min_length= 3, max_length=20)
     email = EmailField(required=True, min_length= 3, max_length= 20)
     password = StringField(required= True, min_length= 3, max_length=100)
+    role = StringField(min_length=3 , max_length= 10)
 
 
     def to_json(self):
@@ -18,7 +19,8 @@ class Tester(Document):
             "_id": self._id,
             "name": self.name,
             "email": self.email,
-            "password": self.password
+            "password": self.password,
+            "role" : self.role
         }
 
 
@@ -81,7 +83,7 @@ class Tester(Document):
                 body['password'] = hashed_password
 
             data.update(**body)
-            
+
         return None
 
 
@@ -90,9 +92,11 @@ class Tester(Document):
         data = request.get_json()
         if data:
             hashed_password = bcrypt.generate_password_hash(data['password']).decode('utf-8')
+            convert = {key: value if key != "role" else value.lower() for key ,value in data.items()}
             body = Tester(
                 email = data['email'],
-                password = hashed_password
+                password = hashed_password,
+                role = convert['role']
             )
 
             body.save()
@@ -106,10 +110,10 @@ class Tester(Document):
         if find_name:
             data = json.dumps(find_name)
             return data
-        
+
         return None
 
-    
+
 
     @classmethod
     def update_by_name(cls,name):
@@ -146,17 +150,17 @@ class Tester(Document):
                 body['password'] = hashed_password
 
             data.update(**body)
-            
+
         return data
-    
-    
-    
+
+
+
     @classmethod
     def delete_by_email(cls,email):
         data = cls.objects(email__contains = email)
         if data:
             data.delete()
-            
+
         return None
 
 
