@@ -1,8 +1,5 @@
-from mongoengine import Document, StringField,Q,EmailField
-from flask import request,json,jsonify
-from bson import ObjectId
 from flask_bcrypt import Bcrypt
-from flask_jwt_extended import JWTManager,create_access_token,get_jwt_identity,jwt_required
+from app_config import Document,StringField,Q,EmailField,request,json,jsonify
 
 bcrypt = Bcrypt()
 
